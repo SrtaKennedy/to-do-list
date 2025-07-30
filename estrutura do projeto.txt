@@ -1,0 +1,8 @@
+to-do-list/
+├── index.html
+├── style.css
+├── script.js
+├── README.md
+├── assets/
+│   └── (pasta para ícones ou imagens, se necessário)
+└── (futuramente, uma pasta 'data' para persistência, se implementarmos)
