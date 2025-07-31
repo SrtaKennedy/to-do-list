@@ -3,11 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./styles/styles.css">
     <title>To Do List</title>
 </head>
 <body>
-    
+    <header>
+        <h1>Minhas Tarefas</h1>
+        <div class="header-actions">
+            <button id="darkModeToggle" class="mode-toggle" title="Alternar Modo Escuro">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="menuToggle" class="menu-toggle" title="Abrir Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <aside id="sidebar" class="sidebar">
+        <button id="closeSidebar" class="close-sidebar-btn"><i class="fas fa-times"></i></button>
+        <div class="sidebar-content">
+            <h3>Filtros</h3>
+            <button class="filter-btn active" data-filter="all">Todas</button>
+            <button class="filter-btn" data-filter="pending">Em Andamento</button>
+            <button class="filter-btn" data-filter="completed">Concluídas</button>
+            <button class="filter-btn" data-filter="ignored">Ignoradas</button>
+        </div>
+    </aside>
+
+    <main>
+        <section class="task-input-section">
+            <input type="text" id="taskInput" placeholder="Adicionar nova tarefa...">
+            <div class="datetime-input-group">
+                <input type="date" id="taskDate">
+                <input type="time" id="taskTime">
+            </div>
+            <button id="addTaskBtn">
+                <i class="fas fa-plus"></i> Adicionar
+            </button>
+        </section>
+
+        <section class="filters-section desktop-filters">
+            <button class="filter-btn active" data-filter="all">Todas</button>
+            <button class="filter-btn" data-filter="pending">Em Andamento</button>
+            <button class="filter-btn" data-filter="completed">Concluídas</button>
+            <button class="filter-btn" data-filter="ignored">Ignoradas</button>
+        </section>
+
+        <section class="task-list-section">
+            <ul id="taskList">
+                </ul>
+        </section>
+    </main>
+
+
     <script src="./script/script.js"></script>
 </body>
 </html>

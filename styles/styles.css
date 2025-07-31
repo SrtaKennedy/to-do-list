@@ -1,3 +1,457 @@
+/* Importação de fonte - Exemplo: Lato do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+/* Variáveis de Cores */
+:root {
+    /* Modo Claro */
+    --primary-bg-light: #f3e2d4;       /* Fundo claro principal */
+    --secondary-bg-light: #c5b0cd;     /* Fundo secundário / Cards */
+    --accent-color-light: #415e72;     /* Elementos interativos / Texto principal */
+    --text-color-light: #17313e;       /* Texto escuro */
+    --border-color-light: #ccc;
+
+    /* Modo Escuro (cores adaptadas da sua paleta) */
+    --primary-bg-dark: #17313e;        /* Fundo escuro principal */
+    --secondary-bg-dark: #415e72;      /* Fundo secundário / Cards */
+    --accent-color-dark: #c5b0cd;      /* Elementos interativos / Texto principal */
+    --text-color-dark: #f3e2d4;        /* Texto claro */
+    --border-color-dark: #555;
+
+    /* Cores de status */
+    --status-completed: #28a745; /* Verde para concluído */
+    --status-pending: #ffc107;   /* Amarelo para em andamento */
+    --status-ignored: #dc3545;   /* Vermelho para ignorado/não concluído */
+    --status-icon-color: #6c757d; /* Cor padrão para ícones de status */
+}
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    background-color: gray;
+    font-family: 'Lato', sans-serif;
+    background-color: var(--primary-bg-light);
+    color: var(--text-color-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background-color 0.5s ease, color 0.5s ease; /* Animação suave para o modo escuro */
+    position: relative; /* Necessário para a sidebar */
+}
+
+/* Estilo para o modo escuro */
+body.dark-mode {
+    background-color: var(--primary-bg-dark);
+    color: var(--text-color-dark);
+}
+
+body.dark-mode header,
+body.dark-mode main section,
+body.dark-mode .sidebar {
+    background-color: var(--secondary-bg-dark);
+    color: var(--text-color-dark);
+    border-color: var(--border-color-dark);
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="time"] {
+    background-color: var(--primary-bg-dark);
+    color: var(--text-color-dark);
+    border-color: var(--border-color-dark);
+}
+
+body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator,
+body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(100%); /* Para ícone do calendário/relógio no modo escuro */
+}
+
+body.dark-mode button {
+    background-color: var(--accent-color-dark);
+    color: var(--primary-bg-dark); /* Cor do texto do botão */
+}
+
+body.dark-mode button:hover {
+    filter: brightness(1.2); /* Um leve brilho para indicar hover */
+}
+
+body.dark-mode .task-item {
+    background-color: var(--primary-bg-dark);
+    border-color: var(--border-color-dark);
+}
+
+body.dark-mode .filter-btn {
+    background-color: var(--primary-bg-dark);
+    color: var(--text-color-dark);
+    border: 1px solid var(--border-color-dark); /* Borda no modo escuro */
+}
+
+body.dark-mode .filter-btn.active {
+    background-color: var(--accent-color-dark);
+    color: var(--primary-bg-dark);
+    border-color: var(--accent-color-dark);
+}
+
+/* Estilos de Layout */
+header {
+    background-color: var(--secondary-bg-light);
+    color: var(--text-color-light);
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: 700;
+}
+
+main {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+section {
+    background-color: var(--secondary-bg-light);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.5s ease;
+}
+
+/* Seção de Input de Tarefas */
+.task-input-section {
+    display: flex;
+    flex-direction: column; /* Organiza em coluna em telas menores */
+    gap: 10px;
+}
+
+.datetime-input-group {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+#taskInput,
+#taskDate,
+#taskTime {
+    padding: 10px 15px;
+    border: 1px solid var(--border-color-light);
+    border-radius: 5px;
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.5s ease, color 0.5s ease;
+    flex: 1; /* Para inputs de data/hora */
+}
+
+#taskInput {
+    width: 100%; /* Garante que o input principal ocupe toda a largura */
+}
+
+#taskInput:focus,
+#taskDate:focus,
+#taskTime:focus {
+    border-color: var(--accent-color-light);
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--accent-color-light);
+    color: var(--primary-bg-light); /* Cor do texto do botão */
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centraliza conteúdo do botão */
+    gap: 8px;
+}
+
+button:hover {
+    filter: brightness(1.1); /* Um leve brilho para indicar hover */
+}
+
+/* Seção de Filtros */
+.filters-section {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-btn {
+    background-color: var(--primary-bg-light);
+    color: var(--text-color-light);
+    border: 1px solid var(--border-color-light);
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    flex: 1;
+    min-width: 120px;
+}
+
+.filter-btn:hover:not(.active) {
+    background-color: var(--secondary-bg-light);
+    color: var(--accent-color-light);
+}
+
+.filter-btn.active {
+    background-color: var(--accent-color-light);
+    color: var(--primary-bg-light);
+    border-color: var(--accent-color-light);
+}
+
+/* Lista de Tarefas */
+#taskList {
+    list-style: none;
+    padding: 0;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid var(--border-color-light);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: var(--primary-bg-light);
+    transition: background-color 0.5s ease, border-color 0.5s ease, opacity 0.3s ease, transform 0.3s ease; /* Animação de entrada/saída */
+    animation: fadeIn 0.3s ease-out; /* Animação padrão para novas tarefas */
+}
+
+.task-item.removing {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.task-item:last-child {
+    margin-bottom: 0;
+}
+
+.task-content {
+    flex-grow: 1;
+    margin-right: 10px;
+    word-break: break-word;
+}
+
+.task-text {
+    display: block; /* Garante que a descrição ocupe sua própria linha, se necessário */
+}
+
+.task-datetime {
+    font-size: 0.85em;
+    color: var(--status-icon-color); /* Uma cor mais discreta */
+    margin-top: 5px; /* Espaço entre texto e data/hora */
+    display: block;
+}
+
+.dark-mode .task-datetime {
+    color: var(--text-color-dark); /* Adapta a cor no modo escuro */
+    opacity: 0.7;
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: var(--status-completed);
+}
+
+.task-item.ignored .task-text {
+    text-decoration: line-through;
+    color: var(--status-ignored);
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.task-actions button {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--status-icon-color); /* Cor padrão para os ícones */
+    transition: color 0.2s ease;
+}
+
+.task-actions button:hover {
+    filter: none; /* Remove o brilho padrão para os ícones */
+}
+
+.task-actions button.complete-btn:hover {
+    color: var(--status-completed);
+}
+
+.task-actions button.edit-btn:hover {
+    color: var(--accent-color-light);
+}
+
+.task-actions button.delete-btn:hover {
+    color: var(--status-ignored); /* Pode ser a cor de ignorado para deletar */
+}
+
+.task-actions button.ignore-btn:hover { /* Novo nome para o botão de "desistência" */
+    color: var(--status-ignored);
+}
+
+/* Toggle do Modo Escuro */
+.mode-toggle, .menu-toggle {
+    background-color: transparent;
+    border: none;
+    color: var(--text-color-light);
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.dark-mode .mode-toggle, .dark-mode .menu-toggle {
+    color: var(--text-color-dark);
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: var(--secondary-bg-light);
+    color: var(--text-color-light);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%); /* Escondido por padrão */
+    transition: transform 0.4s ease-in-out;
+    z-index: 1000; /* Garante que fique acima de outros elementos */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.active {
+    transform: translateX(0); /* Mostra a sidebar */
+}
+
+.close-sidebar-btn {
+    align-self: flex-end; /* Alinha o botão de fechar à direita */
+    font-size: 1.8em;
+    background: none;
+    border: none;
+    color: var(--text-color-light);
+    cursor: pointer;
+    padding: 0; /* Remove padding extra do botão */
+    margin-bottom: 20px;
+}
+
+.dark-mode .close-sidebar-btn {
+    color: var(--text-color-dark);
+}
+
+.sidebar-content h3 {
+    margin-bottom: 15px;
+    color: var(--accent-color-light);
+}
+
+.dark-mode .sidebar-content h3 {
+    color: var(--accent-color-dark);
+}
+
+.sidebar-content .filter-btn {
+    width: 100%; /* Botões de filtro na sidebar ocupam toda a largura */
+    margin-bottom: 10px;
+}
+
+/* Responsividade */
+/* Esconde o botão de menu em telas maiores, e os filtros de desktop em telas menores */
+@media (min-width: 768px) {
+    .menu-toggle {
+        display: none; /* Esconde o botão de menu em desktop/tablet */
+    }
+    .desktop-filters {
+        display: flex; /* Garante que os filtros do desktop apareçam */
+    }
+    .sidebar {
+        display: none; /* Esconde a sidebar em telas maiores */
+    }
+}
+
+@media (max-width: 767px) {
+    .desktop-filters {
+        display: none; /* Esconde os filtros do desktop em telas menores */
+    }
+    .menu-toggle {
+        display: block; /* Mostra o botão de menu em telas menores */
+    }
+    /* Diminui o padding do body em telas muito pequenas */
+    body {
+        padding: 10px;
+    }
+    header {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 1.5em;
+    }
+    main {
+        padding: 0; /* Remove padding do main, já que o body tem */
+    }
+
+    .task-input-section {
+        flex-direction: column;
+    }
+
+    .datetime-input-group {
+        flex-direction: column; /* Inputs de data/hora em coluna em mobile */
+    }
+
+    #addTaskBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .task-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
 }
