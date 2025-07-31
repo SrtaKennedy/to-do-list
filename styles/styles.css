@@ -1,4 +1,3 @@
-/* Importação de fonte - Exemplo: Lato do Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
 
 /* Variáveis de Cores */
@@ -41,7 +40,7 @@ body {
     min-height: 100vh;
     padding: 20px;
     transition: background-color 0.5s ease, color 0.5s ease; /* Animação suave para o modo escuro */
-    position: relative; /* Necessário para a sidebar */
+    position: relative; /* Necessário para a sidebar e modal */
 }
 
 /* Estilo para o modo escuro */
@@ -52,7 +51,8 @@ body.dark-mode {
 
 body.dark-mode header,
 body.dark-mode main section,
-body.dark-mode .sidebar {
+body.dark-mode .sidebar,
+body.dark-mode .modal-content { /* Adicionado modal-content */
     background-color: var(--secondary-bg-dark);
     color: var(--text-color-dark);
     border-color: var(--border-color-dark);
@@ -395,6 +395,111 @@ button:hover {
     width: 100%; /* Botões de filtro na sidebar ocupam toda a largura */
     margin-bottom: 10px;
 }
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1001; /* Sit on top (higher than sidebar) */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    display: flex; /* Use flex to center content */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--secondary-bg-light);
+    margin: auto;
+    padding: 30px;
+    border: 1px solid var(--border-color-light);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: center;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    color: var(--accent-color-light);
+    font-size: 1.8em;
+}
+
+.dark-mode .modal-content h2 {
+    color: var(--accent-color-dark);
+}
+
+.modal-content p {
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.modal-actions .confirm-btn {
+    background-color: var(--status-ignored); /* Vermelho para confirmar exclusão */
+    color: white;
+}
+
+.modal-actions .confirm-btn:hover {
+    background-color: #c82333;
+}
+
+.modal-actions .cancel-btn {
+    background-color: var(--status-icon-color); /* Cinza para cancelar */
+    color: white;
+}
+
+.modal-actions .cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.close-button {
+    color: var(--text-color-light);
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.dark-mode .close-button {
+    color: var(--text-color-dark);
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.dark-mode .close-button:hover,
+.dark-mode .close-button:focus {
+    color: #ccc;
+}
+
 
 /* Responsividade */
 /* Esconde o botão de menu em telas maiores, e os filtros de desktop em telas menores */

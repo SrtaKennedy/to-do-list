@@ -5,12 +5,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const addTaskBtn = document.getElementById('addTaskBtn');
     const taskList = document.getElementById('taskList');
     const darkModeToggle = document.getElementById('darkModeToggle');
-    const filterButtons = document.querySelectorAll('.filter-btn'); // Seleciona todos os botões de filtro
+    const filterButtons = document.querySelectorAll('.filter-btn');
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('sidebar');
     const closeSidebarBtn = document.getElementById('closeSidebar');
 
+    // Elementos da Modal
+    const confirmationModal = document.getElementById('confirmationModal');
+    const closeButton = confirmationModal.querySelector('.close-button');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const taskToDeleteText = document.getElementById('taskToDeleteText');
+
     let tasks = []; // Array para armazenar as tarefas
+    let taskIdToDelete = null; // Variável para armazenar o ID da tarefa a ser deletada
 
     // --- Funções de Persistência (Local Storage) ---
     function loadTasks() {
@@ -33,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (filter === 'all') return true;
             if (filter === 'pending') return task.status === 'pending';
             if (filter === 'completed') return task.status === 'completed';
-            if (filter === 'ignored') return task.status === 'ignored'; // Atualizado para 'ignored'
+            if (filter === 'ignored') return task.status === 'ignored';
         });
 
         if (filteredTasks.length === 0) {
@@ -54,18 +62,27 @@ document.addEventListener('DOMContentLoaded', () => {
             // Formata a data e hora para exibição
             let dateTimeString = '';
             if (task.date) {
-                const dateObj = new Date(`${task.date}T${task.time || '00:00'}`); // Combina para parsear corretamente
-                const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                const dateObj = new Date(`${task.date}T${task.time || '00:00'}`);
+                const formattedDate = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
                 const formattedTime = task.time ? ` às ${task.time}` : '';
                 dateTimeString = `${formattedDate}${formattedTime}`;
             }
 
-            listItem.innerHTML = `
-                <div class="task-content">
-                    <span class="task-text">${task.description}</span>
-                    ${dateTimeString ? `<span class="task-datetime">${dateTimeString}</span>` : ''}
-                </div>
-                <div class="task-actions">
+            // Constrói os botões de ação condicionalmente
+            let actionButtonsHTML = '';
+            if (task.status === 'completed') {
+                // Se a tarefa está concluída, apenas editar e deletar
+                actionButtonsHTML = `
+                    <button class="edit-btn" title="Editar Tarefa">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" title="Deletar Tarefa">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                `;
+            } else {
+                // Para tarefas em andamento ou ignoradas, todas as opções
+                actionButtonsHTML = `
                     <button class="complete-btn" title="Marcar como Concluída">
                         <i class="fas fa-check"></i>
                     </button>
@@ -78,6 +95,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="delete-btn" title="Deletar Tarefa">
                         <i class="fas fa-trash-alt"></i>
                     </button>
+                `;
+            }
+
+
+            listItem.innerHTML = `
+                <div class="task-content">
+                    <span class="task-text">${task.description}</span>
+                    ${dateTimeString ? `<span class="task-datetime">${dateTimeString}</span>` : ''}
+                </div>
+                <div class="task-actions">
+                    ${actionButtonsHTML}
                 </div>
             `;
             taskList.appendChild(listItem);
@@ -97,19 +125,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const newTask = {
-            id: Date.now(), // ID único
+            id: Date.now(),
             description: description,
-            date: taskDate, // Adiciona a data
-            time: taskTime, // Adiciona a hora
-            status: 'pending' // Status inicial
+            date: taskDate,
+            time: taskTime,
+            status: 'pending'
         };
 
         tasks.push(newTask);
-        taskInput.value = ''; // Limpa o input principal
-        taskDateInput.value = ''; // Limpa o input de data
-        taskTimeInput.value = ''; // Limpa o input de hora
+        taskInput.value = '';
+        taskDateInput.value = '';
+        taskTimeInput.value = '';
 
-        // Obtém o filtro ativo para renderizar corretamente após adicionar
         const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
         renderTasks(activeFilter);
     });
@@ -130,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tasks[taskIndex].status = 'completed';
             renderTasks(document.querySelector('.filter-btn.active').dataset.filter);
         }
-        // Marcar como Ignorada (antes "Desistência")
+        // Marcar como Ignorada
         else if (target.closest('.ignore-btn')) {
             tasks[taskIndex].status = 'ignored';
             renderTasks(document.querySelector('.filter-btn.active').dataset.filter);
@@ -141,38 +168,71 @@ document.addEventListener('DOMContentLoaded', () => {
             const newDescription = prompt('Editar tarefa:', currentTask.description);
             if (newDescription !== null && newDescription.trim() !== '') {
                 currentTask.description = newDescription.trim();
-                // Opcional: permitir editar data/hora aqui
                 renderTasks(document.querySelector('.filter-btn.active').dataset.filter);
             } else if (newDescription !== null) {
                 alert('A descrição da tarefa não pode ser vazia.');
             }
         }
-        // Deletar Tarefa
+        // Deletar Tarefa (agora com modal de confirmação)
         else if (target.closest('.delete-btn')) {
-            if (confirm('Tem certeza que deseja deletar esta tarefa?')) {
-                // Adiciona classe para animação de saída antes de remover
-                listItem.classList.add('removing');
-                listItem.addEventListener('transitionend', () => {
-                    tasks.splice(taskIndex, 1);
-                    renderTasks(document.querySelector('.filter-btn.active').dataset.filter);
-                }, { once: true }); // Executa o listener apenas uma vez
-            }
+            taskIdToDelete = taskId; // Armazena o ID da tarefa para deletar
+            const task = tasks[taskIndex];
+            taskToDeleteText.textContent = task.description; // Mostra a descrição da tarefa na modal
+            confirmationModal.style.display = 'flex'; // Mostra a modal
         }
     });
 
+    // --- Lógica da Modal de Confirmação ---
+    closeButton.addEventListener('click', () => {
+        confirmationModal.style.display = 'none';
+        taskIdToDelete = null; // Reseta o ID da tarefa
+    });
+
+    cancelDeleteBtn.addEventListener('click', () => {
+        confirmationModal.style.display = 'none';
+        taskIdToDelete = null; // Reseta o ID da tarefa
+    });
+
+    confirmDeleteBtn.addEventListener('click', () => {
+        if (taskIdToDelete !== null) {
+            const taskIndex = tasks.findIndex(task => task.id === taskIdToDelete);
+            if (taskIndex !== -1) {
+                const listItem = document.querySelector(`.task-item[data-id="${taskIdToDelete}"]`);
+                if (listItem) {
+                    listItem.classList.add('removing');
+                    listItem.addEventListener('transitionend', () => {
+                        tasks.splice(taskIndex, 1);
+                        renderTasks(document.querySelector('.filter-btn.active').dataset.filter);
+                    }, { once: true });
+                } else {
+                    // Fallback caso a animação não possa ser aplicada (ex: item já removido por algum motivo)
+                    tasks.splice(taskIndex, 1);
+                    renderTasks(document.querySelector('.filter-btn.active').dataset.filter);
+                }
+            }
+        }
+        confirmationModal.style.display = 'none';
+        taskIdToDelete = null; // Reseta o ID da tarefa após a exclusão
+    });
+
+    // Fecha a modal se clicar fora dela
+    window.addEventListener('click', (e) => {
+        if (e.target === confirmationModal) {
+            confirmationModal.style.display = 'none';
+            taskIdToDelete = null;
+        }
+    });
+
+
     // --- Filtrar Tarefas ---
-    // Atribui listeners aos botões de filtro, tanto do desktop quanto da sidebar
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Remove a classe 'active' de todos os botões de filtro visíveis
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             
-            // Adiciona a classe 'active' aos botões de filtro correspondentes
             const filterValue = button.dataset.filter;
             document.querySelectorAll(`.filter-btn[data-filter="${filterValue}"]`).forEach(btn => btn.classList.add('active'));
 
             renderTasks(filterValue);
-            // Fecha a sidebar se o filtro foi clicado dentro dela
             if (sidebar.classList.contains('active')) {
                 sidebar.classList.remove('active');
             }
@@ -200,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.classList.remove('active');
     });
 
-    // Fecha a sidebar ao clicar fora dela
+    // Fecha a sidebar ao clicar fora dela (e não no menuToggle)
     document.addEventListener('click', (e) => {
         if (sidebar.classList.contains('active') && 
             !sidebar.contains(e.target) && 
@@ -212,14 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Inicialização da Aplicação ---
     function initializeApp() {
-        // Carregar preferência do modo escuro ao iniciar
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
             darkModeToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
         } else {
             darkModeToggle.querySelector('i').classList.replace('fa-sun', 'fa-moon');
         }
-        loadTasks(); // Carrega as tarefas ao iniciar
+        loadTasks();
     }
 
     initializeApp();
