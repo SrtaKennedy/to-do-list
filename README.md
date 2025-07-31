@@ -65,9 +65,3 @@ Este projeto foi **desenvolvido e aprimorado com o auxílio de inteligência art
 * **Documentação:** Geração da estrutura e conteúdo deste `README.md`.
 
 Sinta-se à vontade para explorar o código, sugerir melhorias ou relatar problemas. Toda contribuição é bem-vinda!
-
----
-
-## 📝 Licença
-
-Este projeto está licenciado sob a licença MIT. Consulte o arquivo `LICENSE` (se você criar um) para mais detalhes.
