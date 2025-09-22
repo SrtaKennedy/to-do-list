@@ -54,13 +54,8 @@ E pronto! A aplicação estará rodando no seu navegador.
 
 ---
 
-## 🤝 Contribuição e Auxílio de IA
+### 🤝 Contribuição
 
-Este projeto foi **desenvolvido e aprimorado com o auxílio de inteligência artificial**. A IA contribuiu significativamente nas seguintes etapas:
-
-* **Sugestão de Funcionalidades:** Ideias para recursos como o modo escuro, animações e o status "Ignoradas".
-* **Refinamento de Código e Estilos:** Aprimoramento das animações CSS e otimização da lógica JavaScript para melhor desempenho e usabilidade.
-* **Depuração e Tratamento de Erros:** Ajuda na identificação e correção de pequenos problemas e na implementação de validações.
-* **Documentação:** Geração da estrutura e conteúdo deste `README.md`.
+Este projeto foi uma jornada de aprendizado e aprimoramento. Com assistência de IA para refinar o código, corrigir erros e auxílio na implementação de funcionalidades, garantindo que o resultado final fosse mais robusto e profissional.
 
 Sinta-se à vontade para explorar o código, sugerir melhorias ou relatar problemas. Toda contribuição é bem-vinda!
