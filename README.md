@@ -56,6 +56,6 @@ E pronto! A aplicação estará rodando no seu navegador.
 
 ### 🤝 Contribuição
 
-Este projeto foi uma jornada de aprendizado e aprimoramento. Com assistência de IA para refinar o código, corrigir erros e auxílio na implementação de funcionalidades, garantindo que o resultado final fosse mais robusto e profissional.
+Este projeto foi uma jornada de aprendizado e aprimoramento. Com auxílio de IA para refinar o código, corrigir erros e auxílio na implementação de funcionalidades, garantindo que o resultado final fosse mais robusto e profissional.
 
 Sinta-se à vontade para explorar o código, sugerir melhorias ou relatar problemas. Toda contribuição é bem-vinda!
